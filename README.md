@@ -24,7 +24,7 @@ A smart, web-based inventory tracking system built with Python (Flask) and SQLit
 
 1.  **Clone the repository** (or extract the project files):
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/Antoh254/Inventory-Tracker.git
     cd inventory-system
     ```
 
