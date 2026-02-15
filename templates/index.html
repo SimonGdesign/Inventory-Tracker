@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Alert System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Inventory Tracker</h1>
+            <p class="subtitle">Smart Stock Management System</p>
+        </header>
+
+        <div class="glass-card">
+            <h3 style="margin-bottom: 1.5rem;">Add New Item</h3>
+            <form action="/add" method="POST" class="form-row">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" name="name" placeholder="E.g. Wireless Mouse" required>
+                </div>
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Alert Level</label>
+                    <input type="number" name="reorder_level" placeholder="5" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <span>+ Add Item</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="glass-card" style="padding: 0; overflow: hidden;">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>#{{ item[0] }}</td>
+                        <td style="font-weight: 500;">{{ item[1] }}</td>
+                        <td>
+                            <span class="qty-display {% if item[2] <= item[3] %}qty-low{% endif %}">
+                                {{ item[2] }}
+                            </span>
+                            <small style="color: var(--text-secondary); margin-left: 5px;">(Min: {{ item[3] }})</small>
+                        </td>
+                        <td>
+                            {% if item[2] <= item[3] %} <span class="badge badge-low">REORDER</span>
+                                {% else %}
+                                <span class="badge badge-ok">IN STOCK</span>
+                                {% endif %}
+                        </td>
+                        <td>
+                            <form action="/update/{{ item[0] }}" method="POST"
+                                style="display:inline-flex; gap: 0.5rem;">
+                                <button name="action" value="sell" class="btn btn-sm btn-warning" title="Sell 1">
+                                    - Sell
+                                </button>
+                                <button name="action" value="restock" class="btn btn-sm btn-success" title="Restock 1">
+                                    + Buy
+                                </button>
+                            </form>
+                            <a href="/delete/{{ item[0] }}" class="btn btn-sm btn-danger" style="margin-left: 0.5rem;"
+                                title="Delete Item">
+                                &#10005;
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>
