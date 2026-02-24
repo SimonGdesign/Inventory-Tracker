@@ -11,7 +11,7 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS products
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                   name TEXT NOT NULL, 
-                  quantity INTEGER NOT NULL, 
+                  quantity INTEGER NOT NULL CHECK(quantity >= 0)
                   reorder_level INTEGER NOT NULL)''')
     conn.commit()
     conn.close()
