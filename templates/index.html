@@ -69,9 +69,12 @@
                         <td>
                             <form action="/update/{{ item[0] }}" method="POST"
                                 style="display:inline-flex; gap: 0.5rem;">
-                                <button name="action" value="sell" class="btn btn-sm btn-warning" title="Sell 1">
-                                    - Sell
-                                </button>
+                               <button name="action" value="sell"
+    class="btn btn-sm btn-warning"
+    title="Sell 1"
+    {% if item[2] == 0 %} disabled style="opacity:0.5; cursor:not-allowed;" {% endif %}>
+    - Sell
+</button>
                                 <button name="action" value="restock" class="btn btn-sm btn-success" title="Restock 1">
                                     + Buy
                                 </button>
