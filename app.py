@@ -44,19 +44,32 @@ def add_product():
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
-
 @app.route('/update/<int:id>', methods=['POST'])
 def update_stock(id):
-    # Determine if we are adding or removing stock
     action = request.form['action']
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
-    
-    if action == 'sell':
-        c.execute("UPDATE products SET quantity = quantity - 1 WHERE id = ?", (id,))
-    elif action == 'restock':
-        c.execute("UPDATE products SET quantity = quantity + 1 WHERE id = ?", (id,))
-        
+
+    # First get current quantity
+    c.execute("SELECT quantity FROM products WHERE id = ?", (id,))
+    result = c.fetchone()
+
+    if result:
+        current_qty = result[0]
+
+        if action == 'sell':
+            # Prevent negative stock
+            if current_qty > 0:
+                new_qty = current_qty - 1
+            else:
+                new_qty = 0
+
+            c.execute("UPDATE products SET quantity = ? WHERE id = ?", (new_qty, id))
+
+        elif action == 'restock':
+            new_qty = current_qty + 1
+            c.execute("UPDATE products SET quantity = ? WHERE id = ?", (new_qty, id))
+
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
